@@ -18,6 +18,7 @@ describe('ProfileUtils', () => {
         bio: 'My happy life',
         image: null,
         following: false,
+        muted: false,
       };
 
       // Then
@@ -44,6 +45,7 @@ describe('ProfileUtils', () => {
         bio: 'My happy life',
         image: null,
         following: true,
+        muted: false,
       };
 
       // Then
@@ -70,6 +72,7 @@ describe('ProfileUtils', () => {
         bio: 'My happy life',
         image: null,
         following: false,
+        muted: false,
       };
 
       // Then

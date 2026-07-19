@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import auth from '../auth/auth';
-import { followUser, getProfile, unfollowUser } from './profile.service';
+import { followUser, getProfile, muteAuthor, unfollowUser, unmuteAuthor } from './profile.service';
 
 const router = Router();
 
@@ -57,6 +57,46 @@ router.delete(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const profile = await unfollowUser(req.params.username, req.auth?.user?.id);
+      res.json({ profile });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+/**
+ * Mute author
+ * @auth required
+ * @route {POST} /profiles/:username/mute
+ * @param username string
+ * @returns profile
+ */
+router.post(
+  '/profiles/:username/mute',
+  auth.required,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const profile = await muteAuthor(req.params.username, req.auth?.user?.id);
+      res.json({ profile });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+/**
+ * Unmute author
+ * @auth required
+ * @route {DELETE} /profiles/:username/mute
+ * @param username string
+ * @returns profile
+ */
+router.delete(
+  '/profiles/:username/mute',
+  auth.required,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const profile = await unmuteAuthor(req.params.username, req.auth?.user?.id);
       res.json({ profile });
     } catch (error) {
       next(error);

@@ -2,6 +2,7 @@ import prismaMock from '../prisma-mock';
 import {
   deleteComment,
   favoriteArticle,
+  getFeed,
   unfavoriteArticle,
 } from '../../app/routes/article/article.service';
 
@@ -139,6 +140,33 @@ describe('ArticleService', () => {
 
       // Then
       await expect(unfavoriteArticle(slug, id)).rejects.toThrowError();
+    });
+  });
+  describe('getFeed', () => {
+    test('should exclude muted authors from both the article query and the count', async () => {
+      // Given
+      const id = 123;
+      prismaMock.article.findMany.mockResolvedValue([]);
+      prismaMock.article.count.mockResolvedValue(0);
+
+      // When
+      await getFeed(0, 10, id);
+
+      // Then
+      const expectedWhere = {
+        author: {
+          followedBy: { some: { id } },
+          NOT: {
+            mutedBy: { some: { id } },
+          },
+        },
+      };
+      expect(prismaMock.article.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({ where: expectedWhere }),
+      );
+      expect(prismaMock.article.count).toHaveBeenCalledWith(
+        expect.objectContaining({ where: expectedWhere }),
+      );
     });
   });
 });

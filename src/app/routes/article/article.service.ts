@@ -116,6 +116,9 @@ export const getFeed = async (offset: number, limit: number, id: number) => {
     where: {
       author: {
         followedBy: { some: { id: id } },
+        NOT: {
+          mutedBy: { some: { id: id } },
+        },
       },
     },
   });
@@ -124,6 +127,9 @@ export const getFeed = async (offset: number, limit: number, id: number) => {
     where: {
       author: {
         followedBy: { some: { id: id } },
+        NOT: {
+          mutedBy: { some: { id: id } },
+        },
       },
     },
     orderBy: {

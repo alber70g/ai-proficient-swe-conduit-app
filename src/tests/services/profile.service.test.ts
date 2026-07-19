@@ -1,5 +1,11 @@
 import prismaMock from '../prisma-mock';
-import { followUser, getProfile, unfollowUser } from '../../app/routes/profile/profile.service';
+import {
+  followUser,
+  getProfile,
+  muteAuthor,
+  unfollowUser,
+  unmuteAuthor,
+} from '../../app/routes/profile/profile.service';
 
 describe('ProfileService', () => {
   describe('getProfile', () => {
@@ -140,6 +146,73 @@ describe('ProfileService', () => {
 
       // Then
       await expect(unfollowUser(usernamePayload, id)).rejects.toThrowError();
+    });
+  });
+  describe('muteAuthor', () => {
+    test('should return muted true when the requesting user mutes the author', async () => {
+      // Given
+      const usernamePayload = 'AnotherUser';
+      const id = 123;
+
+      const mockedResponse = {
+        id: 456,
+        username: 'AnotherUser',
+        email: 'another@me',
+        password: '1234',
+        bio: null,
+        image: null,
+        token: '',
+        demo: false,
+        followedBy: [],
+        mutedBy: [{ id: 123 }],
+      };
+
+      // When
+      // @ts-ignore
+      prismaMock.user.update.mockResolvedValue(mockedResponse);
+
+      // Then
+      await expect(muteAuthor(usernamePayload, id)).resolves.toHaveProperty('muted', true);
+    });
+
+    test('should throw an error if no user is found', async () => {
+      // Given
+      const usernamePayload = 'AnotherUser';
+      const id = 123;
+
+      // When
+      prismaMock.user.update.mockRejectedValue(new Error('No User found'));
+
+      // Then
+      await expect(muteAuthor(usernamePayload, id)).rejects.toThrowError();
+    });
+  });
+
+  describe('unmuteAuthor', () => {
+    test('should return muted false when the requesting user unmutes the author', async () => {
+      // Given
+      const usernamePayload = 'AnotherUser';
+      const id = 123;
+
+      const mockedResponse = {
+        id: 456,
+        username: 'AnotherUser',
+        email: 'another@me',
+        password: '1234',
+        bio: null,
+        image: null,
+        token: '',
+        demo: false,
+        followedBy: [],
+        mutedBy: [],
+      };
+
+      // When
+      // @ts-ignore
+      prismaMock.user.update.mockResolvedValue(mockedResponse);
+
+      // Then
+      await expect(unmuteAuthor(usernamePayload, id)).resolves.toHaveProperty('muted', false);
     });
   });
 });

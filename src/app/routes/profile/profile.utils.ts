@@ -8,6 +8,9 @@ const profileMapper = (user: any, id: number | undefined): Profile => ({
   following: id
     ? user?.followedBy.some((followingUser: Partial<User>) => followingUser.id === id)
     : false,
+  muted: id
+    ? !!user?.mutedBy?.some((mutingUser: Partial<User>) => mutingUser.id === id)
+    : false,
 });
 
 export default profileMapper;
