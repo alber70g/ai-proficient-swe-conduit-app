@@ -51,6 +51,8 @@ model User {
   favorites  Article[] @relation("UserFavorites")
   followedBy User[]    @relation("UserFollows")
   following  User[]    @relation("UserFollows")
+  mutedBy    User[]    @relation("UserMutes")
+  muting     User[]    @relation("UserMutes")
   comments   Comment[]
   demo       Boolean   @default(false)
 }

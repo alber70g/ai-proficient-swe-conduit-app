@@ -1,5 +1,5 @@
 import prismaMock from '../prisma-mock';
-import { followUser, getProfile, unfollowUser } from '../../app/routes/profile/profile.service';
+import { followUser, getProfile, muteAuthor, unfollowUser } from '../../app/routes/profile/profile.service';
 
 describe('ProfileService', () => {
   describe('getProfile', () => {
@@ -140,6 +140,34 @@ describe('ProfileService', () => {
 
       // Then
       await expect(unfollowUser(usernamePayload, id)).rejects.toThrowError();
+    });
+  });
+
+  describe('muteAuthor', () => {
+    test('should mute the author', async () => {
+      // Given
+      const username = 'RealWorld';
+      const id = 123;
+
+      const mockedResponse = {
+        id: 456,
+        username: 'RealWorld',
+        email: 'realworld@me',
+        password: '1234',
+        bio: null,
+        image: null,
+        token: '',
+        demo: false,
+        followedBy: [],
+        mutedBy: [{ id: 123 }],
+      };
+
+      // When
+      // @ts-ignore
+      prismaMock.user.update.mockResolvedValue(mockedResponse);
+
+      // Then
+      await expect(muteAuthor(username, id)).resolves.toHaveProperty('muted');
     });
   });
 });

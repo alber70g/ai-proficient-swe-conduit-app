@@ -9,6 +9,7 @@ export const getProfile = async (usernamePayload: string, id?: number) => {
     },
     include: {
       followedBy: true,
+      mutedBy: true,
     },
   });
 
@@ -53,6 +54,48 @@ export const unfollowUser = async (usernamePayload: string, id: number) => {
     },
     include: {
       followedBy: true,
+    },
+  });
+
+  return profileMapper(profile, id);
+};
+
+export const muteAuthor = async (usernamePayload: string, id: number) => {
+  const profile = await prisma.user.update({
+    where: {
+      username: usernamePayload,
+    },
+    data: {
+      mutedBy: {
+        connect: {
+          id,
+        },
+      },
+    },
+    include: {
+      followedBy: true,
+      mutedBy: true,
+    },
+  });
+
+  return profileMapper(profile, id);
+};
+
+export const unmuteAuthor = async (usernamePayload: string, id: number) => {
+  const profile = await prisma.user.update({
+    where: {
+      username: usernamePayload,
+    },
+    data: {
+      mutedBy: {
+        disconnect: {
+          id,
+        },
+      },
+    },
+    include: {
+      followedBy: true,
+      mutedBy: true,
     },
   });
 
