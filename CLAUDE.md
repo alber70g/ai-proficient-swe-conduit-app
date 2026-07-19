@@ -17,3 +17,6 @@ single file: `npx nx test api --testFile=src/tests/services/<file>`.
   Nx and the root ESLint/Prettier runs.
 - Before editing a module, read its immediate callers, its exports, and
   the shared utilities it touches.
+- Researched choices are recorded in `decisions/` (five-line notes; see
+  `decisions/README.md`). Read the relevant note before proposing a
+  library, and never re-litigate a recorded decision without saying so.
